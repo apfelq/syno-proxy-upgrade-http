@@ -49,12 +49,6 @@ fi
 # Save if service restart is needed
 nginxReload=0
 
-# Get server IP range
-ipRange="$(grep -Eo '^server [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' /var/packages/VPNCenter/etc/openvpn/openvpn.conf | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.')"
-echo "IP range is: \"${ipRange}\""
-ipMin="$(grep -Eo '^max-clients [0-9]+' /var/packages/VPNCenter/etc/openvpn/openvpn.conf | grep -Eo '[0-9]+')"
-ipMin=$((2 + ipMin * 4))
-
 # Check if we need to add upgrade
 if grep -Eq '^ +proxy_set_header +Content-Security-Policy +upgrade-insecure-requests;$' /etc/nginx/app.d/server.ReverseProxy.conf; then
 	sed -Ei 's|(^ +proxy_set_header +Content-Security-Policy +upgrade-insecure-requests;$)|\1 return 301 https://$host$request_uri;|g' /etc/nginx/app.d/server.ReverseProxy.conf
